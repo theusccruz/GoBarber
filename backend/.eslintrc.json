@@ -21,6 +21,7 @@
     ],
     "rules": {
 		"prettier/prettier": "error",
+		"class-methods-use-this": "off",
 		"indent": [2, "tab"],
 		"no-tabs": 0,
 		"import/no-extraneous-dependencies": [
