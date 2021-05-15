@@ -2,6 +2,7 @@ import { isEqual } from 'date-fns';
 import Appointment from '../models/Appointment';
 
 interface CreateAppointmentDTO {
+	// Data Transfer Object, dados que são transferidos entre arquivos
 	provider: string;
 	date: Date;
 }
@@ -26,7 +27,10 @@ class AppoinmentsRepository {
 	}
 
 	public create({ provider, date }: CreateAppointmentDTO): Appointment {
-		const appointment = new Appointment(provider, date);
+		const appointment = new Appointment({
+			provider,
+			date,
+		});
 
 		this.appointments.push(appointment);
 		return appointment;
