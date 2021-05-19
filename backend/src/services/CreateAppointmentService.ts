@@ -1,5 +1,7 @@
 import { startOfHour } from 'date-fns';
-import AppointmentRepository from '../repositories/AppoinmentsRepository';
+import { getCustomRepository } from 'typeorm';
+
+import AppointmentsRepository from '../repositories/AppointmentsRepository';
 import Appointment from '../models/Appointment';
 
 interface RequestDTO {
@@ -8,29 +10,28 @@ interface RequestDTO {
 }
 
 class CreateAppointmentService {
-	private appointmentsRepository: AppointmentRepository;
-
-	constructor(appointmentsRepository: AppointmentRepository) {
-		this.appointmentsRepository = appointmentsRepository;
-	}
-
-	public execute({ provider, date }: RequestDTO): Appointment {
+	public async execute({ provider, date }: RequestDTO): Promise<Appointment> {
+		const appointmentsRepository = getCustomRepository(
+			AppointmentsRepository,
+		);
 		/*
 			startOfHour está aqui pois faz parte de uma regra da aplicação,
 			não podem existir agendamentos no mesmo horário
 		*/
 		const appointmentDate = startOfHour(date);
 		const findAppointmentInSameDate =
-			this.appointmentsRepository.findByDate(appointmentDate);
+			await appointmentsRepository.findByDate(appointmentDate);
 
 		if (findAppointmentInSameDate) {
 			throw new Error('Este horário já está agendado!');
 		}
 
-		const appointment = this.appointmentsRepository.create({
+		const appointment = appointmentsRepository.create({
 			provider,
 			date: appointmentDate,
 		});
+
+		await appointmentsRepository.save(appointment); // insert no banco de dados
 
 		return appointment;
 	}
