@@ -1,4 +1,14 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import {
+	Entity,
+	Column,
+	PrimaryGeneratedColumn,
+	CreateDateColumn,
+	UpdateDateColumn,
+	ManyToOne,
+	JoinColumn,
+} from 'typeorm';
+
+import User from './User';
 
 /*
 	O decorator @Entity funciona como uma função, a classe que está
@@ -15,10 +25,26 @@ class Appointment {
 	id: string;
 
 	@Column()
-	provider: string;
+	provider_id: string;
+
+	/*
+		Relacionamentos SQL
+		Um para Um (OneToOne)
+		Um para Muitos (OneToMany)
+		Muitos para Muitos (ManyToMany)
+	*/
+	@ManyToOne(() => User) // retorna qual model será utilizado
+	@JoinColumn({ name: 'provider_id' }) // informa qual coluna do banco vai identificar esse relacionamento
+	provider: User; // relacionamento sendo feito, agora essa propriedade tem acesso aos dados de User
 
 	@Column('timestamp with time zone')
 	date: Date;
+
+	@CreateDateColumn()
+	created_at: Date;
+
+	@UpdateDateColumn()
+	updated_at: Date;
 }
 
 export default Appointment;
