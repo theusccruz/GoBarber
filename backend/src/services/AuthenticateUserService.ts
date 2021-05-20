@@ -3,6 +3,7 @@ import { compare } from 'bcryptjs';
 import { sign } from 'jsonwebtoken';
 import UsersRepository from '../repositories/UsersRepository';
 import User from '../models/User';
+import authConfig from '../config/auth';
 
 interface RequestDTO {
 	email: string;
@@ -39,14 +40,11 @@ export default class AuthenticateUserService {
 			}
 
 		*/
-		const token = sign(
-			{},
-			'9cdf542e2b9e8e5d7d02da3a5e867193b062c02d4efc04e1f4a7dc144993ed78',
-			{
-				subject: user.id,
-				expiresIn: '1d',
-			},
-		);
+		const { secret, expiresIn } = authConfig.jwt;
+		const token = sign({}, secret, {
+			subject: user.id,
+			expiresIn,
+		});
 
 		return {
 			user,
