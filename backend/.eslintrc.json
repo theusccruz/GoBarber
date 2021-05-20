@@ -23,7 +23,6 @@
 		"camelcase": "off",
 		"prettier/prettier": "warn",
 		"class-methods-use-this": "off",
-		"indent": ["error", "tab"],
 		"no-tabs": 0,
 		"import/no-extraneous-dependencies": [
 			"error",

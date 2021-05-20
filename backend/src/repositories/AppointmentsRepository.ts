@@ -14,17 +14,17 @@ import Appointment from '../models/Appointment';
 */
 @EntityRepository(Appointment)
 class AppointmentsRepository extends Repository<Appointment> {
-	/*
+  /*
 		Aqui são estendidas as funções presentes na classe Repository (typeOrm),
 		essas funções tem ação direta no banco de dados
 	*/
-	public async findByDate(date: Date): Promise<Appointment | null> {
-		const findAppointment = await this.findOne({
-			// findOne vai retornar uma Promise
-			where: { date }, // { date: date }
-		});
-		return findAppointment || null; // se não encontrar um Appointment, retorna nulo
-	}
+  public async findByDate(date: Date): Promise<Appointment | null> {
+    const findAppointment = await this.findOne({
+      // findOne vai retornar uma Promise
+      where: { date }, // { date: date }
+    });
+    return findAppointment || null; // se não encontrar um Appointment, retorna nulo
+  }
 }
 
 export default AppointmentsRepository;

@@ -1,4 +1,8 @@
+.vscode/
 node_modules/
 dockerfile
 docker-compose.yml
 .dockerignore
+temp/*
+!temp/.gitkeep
+build/
