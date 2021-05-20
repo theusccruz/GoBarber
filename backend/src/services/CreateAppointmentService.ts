@@ -3,6 +3,7 @@ import { getCustomRepository } from 'typeorm';
 
 import AppointmentsRepository from '../repositories/AppointmentsRepository';
 import Appointment from '../models/Appointment';
+import AppError from '../errors/AppError';
 
 interface RequestDTO {
   provider_id: string;
@@ -25,7 +26,7 @@ class CreateAppointmentService {
     );
 
     if (findAppointmentInSameDate) {
-      throw new Error('Este horário já está agendado!');
+      throw new AppError('Este horário já está agendado!');
     }
 
     const appointment = appointmentsRepository.create({

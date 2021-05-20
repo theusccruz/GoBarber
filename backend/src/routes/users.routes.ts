@@ -22,21 +22,15 @@ usersRouter.post('/', async (request, response) => {
   const { name, email, password } = request.body;
   const createUser = new CreateUserService();
 
-  try {
-    const newUser = await createUser.execute({
-      name,
-      email,
-      password,
-    });
-    const newUserReturned: ReturnedUser = newUser;
-    delete newUserReturned.password;
+  const newUser = await createUser.execute({
+    name,
+    email,
+    password,
+  });
+  const newUserReturned: ReturnedUser = newUser;
+  delete newUserReturned.password;
 
-    return response.status(201).json(newUserReturned);
-  } catch (error) {
-    return response.status(400).json({
-      message: error.message,
-    });
-  }
+  return response.status(201).json(newUserReturned);
 });
 
 usersRouter.patch(

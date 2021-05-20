@@ -2,30 +2,31 @@ import { getCustomRepository } from 'typeorm';
 import { hash } from 'bcryptjs';
 import UsersRepository from '../repositories/UsersRepository';
 import User from '../models/User';
+import AppError from '../errors/AppError';
 
 interface RequestDTO {
-	name: string;
-	password: string;
-	email: string;
+  name: string;
+  password: string;
+  email: string;
 }
 
 export default class CreateUserService {
-	public async execute({ name, password, email }: RequestDTO): Promise<User> {
-		const usersRepository = getCustomRepository(UsersRepository);
-		const findUserWithSameEmail = await usersRepository.findByEmail(email);
+  public async execute({ name, password, email }: RequestDTO): Promise<User> {
+    const usersRepository = getCustomRepository(UsersRepository);
+    const findUserWithSameEmail = await usersRepository.findByEmail(email);
 
-		if (findUserWithSameEmail) {
-			throw new Error('Este email já possui cadastro');
-		}
+    if (findUserWithSameEmail) {
+      throw new AppError('Este email já possui cadastro');
+    }
 
-		const hashedPassoword = await hash(password, 8);
-		const user = usersRepository.create({
-			name,
-			password: hashedPassoword,
-			email,
-		});
+    const hashedPassoword = await hash(password, 8);
+    const user = usersRepository.create({
+      name,
+      password: hashedPassoword,
+      email,
+    });
 
-		await usersRepository.save(user);
-		return user;
-	}
+    await usersRepository.save(user);
+    return user;
+  }
 }
