@@ -40,21 +40,15 @@ usersRouter.patch(
   async (request, response) => {
     const updateUserAvatar = new UpdateUserAvatarService();
 
-    try {
-      const user = await updateUserAvatar.execute({
-        user_id: request.user.id,
-        avatarFilename: request.file.filename,
-      });
+    const user = await updateUserAvatar.execute({
+      user_id: request.user.id,
+      avatarFilename: request.file.filename,
+    });
 
-      const returnedUser: ReturnedUser = user;
-      delete returnedUser.password;
+    const returnedUser: ReturnedUser = user;
+    delete returnedUser.password;
 
-      return response.json(returnedUser);
-    } catch (error) {
-      return response.status(400).json({
-        message: error.message,
-      });
-    }
+    return response.json(returnedUser);
   },
 );
 

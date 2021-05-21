@@ -19,10 +19,10 @@ export default class CreateUserService {
       throw new AppError('Este email já possui cadastro');
     }
 
-    const hashedPassoword = await hash(password, 8);
+    const hashedPassword = await hash(password, 8);
     const user = usersRepository.create({
       name,
-      password: hashedPassoword,
+      password: hashedPassword,
       email,
     });
 

@@ -35,7 +35,6 @@ class CreateAppointmentService {
     });
 
     await appointmentsRepository.save(appointment); // insert no banco de dados
-
     return appointment;
   }
 }
