@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useRef } from 'react';
+import React, { useCallback, useRef } from 'react';
 import { FiLogIn, FiMail, FiLock } from 'react-icons/fi';
 import { Form } from '@unform/web';
 import { FormHandles } from '@unform/core';
@@ -9,7 +9,8 @@ import logoImg from '../../assets/logo.svg';
 import Input from '../../components/Input/Input';
 import Button from '../../components/Button/Button';
 import getValidationErrors from '../../utils/getValidationErrors';
-import { AuthContext } from '../../context/AuthContext';
+import { useAuth } from '../../hooks/auth';
+import { useToast } from '../../hooks/toast';
 
 type FormData = {
   email: string;
@@ -19,8 +20,8 @@ type FormData = {
 const SignIn: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
 
-  const { signIn, user } = useContext(AuthContext);
-  console.log(user);
+  const { signIn } = useAuth();
+  const { addToast } = useToast();
 
   const submitForm = useCallback(
     async (data: FormData) => {
@@ -36,13 +37,22 @@ const SignIn: React.FC = () => {
           abortEarly: false,
         });
 
-        signIn(data);
+        await signIn(data);
       } catch (error) {
-        const errors = getValidationErrors(error);
-        formRef.current?.setErrors(errors);
+        if (error instanceof Yup.ValidationError) {
+          const errors = getValidationErrors(error);
+          formRef.current?.setErrors(errors);
+          return;
+        }
+
+        addToast({
+          title: 'Email ou senha incorretos',
+          description: 'Por favor tente novamente',
+          type: 'info',
+        });
       }
     },
-    [signIn],
+    [signIn, addToast],
   );
 
   return (

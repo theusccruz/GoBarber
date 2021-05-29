@@ -2,14 +2,15 @@ import React from 'react';
 
 import GlobalStyle from './styles/global';
 import SignIn from './pages/SignIn/index-signIn';
-import { AuthProvider } from './context/AuthContext';
+import AppProvider from './hooks/indexHooks';
 
 const App: React.FC = () => {
   return (
     <>
-      <AuthProvider>
+      <AppProvider>
         <SignIn />
-      </AuthProvider>
+      </AppProvider>
+
       <GlobalStyle />
     </>
   );
