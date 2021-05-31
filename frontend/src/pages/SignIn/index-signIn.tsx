@@ -4,7 +4,7 @@ import { Form } from '@unform/web';
 import { FormHandles } from '@unform/core';
 import * as Yup from 'yup';
 
-import { Container, Content, Background } from './styles-sign';
+import { Container, Content, Background } from './styles-signIn';
 import logoImg from '../../assets/logo.svg';
 import Input from '../../components/Input/Input';
 import Button from '../../components/Button/Button';
@@ -38,6 +38,11 @@ const SignIn: React.FC = () => {
         });
 
         await signIn(data);
+
+        addToast({
+          title: 'Bem Vindo',
+          type: 'success',
+        });
       } catch (error) {
         if (error instanceof Yup.ValidationError) {
           const errors = getValidationErrors(error);
@@ -48,7 +53,7 @@ const SignIn: React.FC = () => {
         addToast({
           title: 'Email ou senha incorretos',
           description: 'Por favor tente novamente',
-          type: 'info',
+          type: 'error',
         });
       }
     },

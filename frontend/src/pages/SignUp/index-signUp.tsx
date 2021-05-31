@@ -4,7 +4,7 @@ import { Form } from '@unform/web';
 import { FormHandles } from '@unform/core';
 import * as Yup from 'yup';
 
-import { Container, Content, Background } from './styles-sign';
+import { Container, Content, Background } from './styles-signUp';
 import logoImg from '../../assets/logo.svg';
 import Input from '../../components/Input/Input';
 import Button from '../../components/Button/Button';

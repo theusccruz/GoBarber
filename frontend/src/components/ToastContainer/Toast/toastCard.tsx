@@ -6,9 +6,10 @@ import { Container } from './style';
 
 interface ToastProps {
   toastData: ToastMessage;
+  style: object;
 }
 
-const Toast: React.FC<ToastProps> = ({ toastData }) => {
+const Toast: React.FC<ToastProps> = ({ toastData, style }) => {
   const { removeToast } = useToast();
 
   const icons = {
@@ -28,7 +29,7 @@ const Toast: React.FC<ToastProps> = ({ toastData }) => {
   }, [removeToast, toastData.id]);
 
   return (
-    <Container hasDescription={!!toastData.description} type={toastData.type}>
+    <Container hasDescription={!!toastData.description} type={toastData.type} style={style}>
       {icons[toastData.type || 'info']}
       <div>
         <strong>{toastData.title}</strong>
