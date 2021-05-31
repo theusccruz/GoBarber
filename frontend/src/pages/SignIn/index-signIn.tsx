@@ -3,8 +3,9 @@ import { FiLogIn, FiMail, FiLock } from 'react-icons/fi';
 import { Form } from '@unform/web';
 import { FormHandles } from '@unform/core';
 import * as Yup from 'yup';
+import { Link, useHistory } from 'react-router-dom';
 
-import { Container, Content, Background } from './styles-signIn';
+import { Container, Content, Background, AnimationContainer } from './styles-signIn';
 import logoImg from '../../assets/logo.svg';
 import Input from '../../components/Input/Input';
 import Button from '../../components/Button/Button';
@@ -22,6 +23,7 @@ const SignIn: React.FC = () => {
 
   const { signIn } = useAuth();
   const { addToast } = useToast();
+  const history = useHistory();
 
   const submitForm = useCallback(
     async (data: FormData) => {
@@ -43,6 +45,8 @@ const SignIn: React.FC = () => {
           title: 'Bem Vindo',
           type: 'success',
         });
+
+        history.push('/dashboard');
       } catch (error) {
         if (error instanceof Yup.ValidationError) {
           const errors = getValidationErrors(error);
@@ -50,37 +54,48 @@ const SignIn: React.FC = () => {
           return;
         }
 
+        if (error.message === 'timeout of 3000ms exceeded') {
+          addToast({
+            title: 'Erro ao realizar logon',
+            description: 'Por favor tente novamente mais tarde',
+            type: 'error',
+            duration: 4000,
+          });
+          return;
+        }
+
         addToast({
           title: 'Email ou senha incorretos',
-          description: 'Por favor tente novamente',
           type: 'error',
         });
       }
     },
-    [signIn, addToast],
+    [signIn, addToast, history],
   );
 
   return (
     <Container>
       <Content>
-        <img src={logoImg} alt="GoBarber" />
+        <AnimationContainer>
+          <img src={logoImg} alt="GoBarber" />
 
-        {/* eslint-disable-next-line @typescript-eslint/no-empty-function */}
-        <Form ref={formRef} onSubmit={submitForm}>
-          <h1>Faça seu Logon</h1>
+          {/* eslint-disable-next-line @typescript-eslint/no-empty-function */}
+          <Form ref={formRef} onSubmit={submitForm}>
+            <h1>Faça seu Logon</h1>
 
-          <Input name="email" icon={FiMail} type="text" placeholder="Email" />
-          <Input name="password" icon={FiLock} type="password" placeholder="Senha" />
+            <Input name="email" icon={FiMail} type="text" placeholder="Email" />
+            <Input name="password" icon={FiLock} type="password" placeholder="Senha" />
 
-          <Button type="submit">Entrar</Button>
+            <Button type="submit">Entrar</Button>
 
-          <a href="TEste">Esqueci minha senha</a>
-        </Form>
+            <a href="TEste">Esqueci minha senha</a>
+          </Form>
 
-        <a href="TEste">
-          <FiLogIn />
-          Criar conta
-        </a>
+          <Link to="/signup">
+            <FiLogIn />
+            Criar conta
+          </Link>
+        </AnimationContainer>
       </Content>
       <Background />
     </Container>

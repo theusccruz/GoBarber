@@ -8,6 +8,7 @@ export interface ToastMessage {
   type?: 'success' | 'error' | 'info';
   title: string;
   description?: string;
+  duration?: number;
 }
 
 interface ToastContextData {
@@ -20,18 +21,22 @@ const ToastContext = createContext<ToastContextData>({} as ToastContextData);
 const ToastProvider: React.FC = ({ children }) => {
   const [messages, setMessages] = useState<ToastMessage[]>([]);
 
-  const addToast = useCallback(({ title, type, description }: Omit<ToastMessage, 'id'>) => {
-    const id = uuidv4();
+  const addToast = useCallback(
+    ({ title, type, description, duration }: Omit<ToastMessage, 'id'>) => {
+      const id = uuidv4();
 
-    const toast = {
-      id,
-      title,
-      type,
-      description,
-    };
-    // Passando uma função no set que recebe como parâmetro o valor antigo do estado
-    setMessages(oldMessages => [...oldMessages, toast]); // ou [...messages, toast]
-  }, []);
+      const toast = {
+        id,
+        title,
+        type,
+        description,
+        duration,
+      };
+      // Passando uma função no set que recebe como parâmetro o valor antigo do estado
+      setMessages(oldMessages => [...oldMessages, toast]); // ou [...messages, toast]
+    },
+    [],
+  );
 
   const removeToast = useCallback((id: string) => {
     setMessages(state => state.filter(message => message.id !== id));

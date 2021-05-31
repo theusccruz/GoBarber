@@ -18,15 +18,17 @@ const Toast: React.FC<ToastProps> = ({ toastData, style }) => {
     error: <FiAlertCircle size={22} />,
   };
 
+  const toastDuration = toastData.duration ? toastData.duration : 3000;
+
   useEffect(() => {
     const timer = setTimeout(() => {
       removeToast(toastData.id);
-    }, 3000);
+    }, toastDuration);
 
     return () => {
       clearTimeout(timer);
     };
-  }, [removeToast, toastData.id]);
+  }, [removeToast, toastData.id, toastDuration]);
 
   return (
     <Container hasDescription={!!toastData.description} type={toastData.type} style={style}>
