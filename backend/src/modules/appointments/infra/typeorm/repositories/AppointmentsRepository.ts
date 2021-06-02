@@ -1,5 +1,6 @@
-import { EntityRepository, Repository } from 'typeorm';
+import { getRepository, Repository } from 'typeorm';
 import IAppointmentsRepository from '@modules/appointments/repositories/IAppointmentsRepository';
+import ICreateAppointmentDTO from '@modules/appointments/dtos/ICreateAppointmentDTO';
 import Appointment from '../entities/Appointment';
 /*
 	@EntityRepository vai pertencer à uma classe que crie um repostório
@@ -13,21 +14,35 @@ import Appointment from '../entities/Appointment';
 	Para utilizar o repositório criado é necessário passar ele como parâmetro
 	na função getCustomRepository().
 */
-@EntityRepository(Appointment)
-class AppointmentsRepository
-  extends Repository<Appointment>
-  implements IAppointmentsRepository
-{
+
+class AppointmentsRepository implements IAppointmentsRepository {
+  private ormRepository: Repository<Appointment>;
+
+  constructor() {
+    this.ormRepository = getRepository(Appointment);
+  }
+
   /*
 		Aqui são estendidas as funções presentes na classe Repository (typeOrm),
 		essas funções tem ação direta no banco de dados
 	*/
   public async findByDate(date: Date): Promise<Appointment | undefined> {
-    const findAppointment = await this.findOne({
+    const findAppointment = await this.ormRepository.findOne({
       // findOne vai retornar uma Promise
       where: { date }, // { date: date }
     });
     return findAppointment; // se não encontrar um Appointment, retorna nulo
+  }
+
+  public async create({ date, provider_id }: ICreateAppointmentDTO): Promise<Appointment> {
+    const appointment = await this.ormRepository.create({
+      provider_id,
+      date,
+    });
+
+    await this.ormRepository.save(appointment);
+
+    return appointment;
   }
 }
 

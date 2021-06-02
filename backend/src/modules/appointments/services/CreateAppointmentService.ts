@@ -4,6 +4,7 @@ import { getCustomRepository } from 'typeorm';
 import AppError from '@shared/errors/AppError';
 import AppointmentsRepository from '../infra/typeorm/repositories/AppointmentsRepository';
 import Appointment from '../infra/typeorm/entities/Appointment';
+import IAppointmentsRepository from '../repositories/IAppointmentsRepository';
 
 interface RequestDTO {
   provider_id: string;
@@ -11,10 +12,9 @@ interface RequestDTO {
 }
 
 class CreateAppointmentService {
-  public async execute({
-    provider_id,
-    date,
-  }: RequestDTO): Promise<Appointment> {
+  constructor(private appointmentsRepository: IAppointmentsRepository) {}
+
+  public async execute({ provider_id, date }: RequestDTO): Promise<Appointment> {
     const appointmentsRepository = getCustomRepository(AppointmentsRepository);
     /*
 			startOfHour está aqui pois faz parte de uma regra da aplicação,
@@ -34,7 +34,6 @@ class CreateAppointmentService {
       date: appointmentDate,
     });
 
-    await appointmentsRepository.save(appointment); // insert no banco de dados
     return appointment;
   }
 }

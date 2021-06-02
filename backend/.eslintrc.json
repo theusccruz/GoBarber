@@ -22,6 +22,7 @@
     "import"
   ],
   "rules": {
+    "no-useless-constructor": "off",
     "import/no-unresolved": "off",
     "camelcase": "off",
     "prettier/prettier": "warn",
