@@ -6,11 +6,13 @@ import {
   KeyboardAvoidingView,
   Platform,
   TextInput,
+  Alert,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import { useNavigation } from '@react-navigation/native';
 import { Form } from '@unform/mobile';
 import { FormHandles } from '@unform/core';
+import * as Yup from 'yup';
 
 import {
   Container,
@@ -23,6 +25,12 @@ import {
 import Input from '../../components/Input/Input';
 import Button from '../../components/Button/Button';
 import logoImg from '../../assets/logo.png';
+import getValidationErrors from '../../utils/getValidationErrors';
+
+type SignInFormData = {
+  email: string;
+  password: string;
+};
 
 const SignIn: React.FC = () => {
   const navigation = useNavigation();
@@ -30,8 +38,38 @@ const SignIn: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
   const passwordInputRef = useRef<TextInput>(null);
 
-  const handleSignIn = useCallback((data: object) => {
-    console.log(data);
+  const handleSubmit = useCallback(async (data: SignInFormData) => {
+    formRef.current?.setErrors({});
+
+    const schema = Yup.object().shape({
+      email: Yup.string().required('Email obrigatório').email('Digite um email válido'),
+      password: Yup.string().required('Senha obrigatória'),
+    });
+
+    try {
+      await schema.validate(data, {
+        abortEarly: false,
+      });
+
+      // await signIn
+
+      // redirecionamento
+
+      console.log('data');
+    } catch (error) {
+      if (error instanceof Yup.ValidationError) {
+        const errors = getValidationErrors(error);
+
+        formRef.current?.setErrors(errors);
+        console.log('erooooooooo');
+
+        return;
+      }
+
+      // erro do servidor
+
+      Alert.alert('Email ou senha incorretos');
+    }
   }, []);
 
   return (
@@ -49,7 +87,7 @@ const SignIn: React.FC = () => {
               <Title>Faça seu logon</Title>
             </View>
 
-            <Form onSubmit={handleSignIn} ref={formRef}>
+            <Form onSubmit={handleSubmit} ref={formRef}>
               <Input
                 name="email"
                 icon="mail"

@@ -8,7 +8,6 @@ import React, {
 } from 'react';
 import { TextInputProps } from 'react-native';
 import { useField } from '@unform/core';
-import FeatherIcon from 'react-native-vector-icons/Feather';
 
 import { Container, TextInput, Icon } from './styles';
 
@@ -62,7 +61,7 @@ const Input: React.ForwardRefRenderFunction<InputRef, InputProps> = (
   }, []);
 
   return (
-    <Container isFocused={isFocused}>
+    <Container isFocused={isFocused} isErrored={!!error}>
       <Icon name={icon} size={20} color={isFocused || isFilled ? '#ff9000' : '#666360'} />
 
       <TextInput
