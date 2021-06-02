@@ -1,5 +1,6 @@
 import { EntityRepository, Repository } from 'typeorm';
-import Appointment from '../models/Appointment';
+import IAppointmentsRepository from '@modules/appointments/repositories/IAppointmentsRepository';
+import Appointment from '../entities/Appointment';
 /*
 	@EntityRepository vai pertencer à uma classe que crie um repostório
 	personalizado. Repositórios personalizados contém os métodos que realizam
@@ -13,17 +14,20 @@ import Appointment from '../models/Appointment';
 	na função getCustomRepository().
 */
 @EntityRepository(Appointment)
-class AppointmentsRepository extends Repository<Appointment> {
+class AppointmentsRepository
+  extends Repository<Appointment>
+  implements IAppointmentsRepository
+{
   /*
 		Aqui são estendidas as funções presentes na classe Repository (typeOrm),
 		essas funções tem ação direta no banco de dados
 	*/
-  public async findByDate(date: Date): Promise<Appointment | null> {
+  public async findByDate(date: Date): Promise<Appointment | undefined> {
     const findAppointment = await this.findOne({
       // findOne vai retornar uma Promise
       where: { date }, // { date: date }
     });
-    return findAppointment || null; // se não encontrar um Appointment, retorna nulo
+    return findAppointment; // se não encontrar um Appointment, retorna nulo
   }
 }
 
