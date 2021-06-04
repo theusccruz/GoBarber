@@ -21,18 +21,4 @@ export default class UsersController {
 
     return response.status(201).json(newUserReturned);
   }
-
-  public async update(request: Request, response: Response): Promise<Response> {
-    const updateUserAvatar = container.resolve(UpdateUserAvatarService);
-
-    const user = await updateUserAvatar.execute({
-      user_id: request.user.id,
-      avatarFilename: request.file.filename,
-    });
-
-    const returnedUser: ReturnedUser = user;
-    delete returnedUser.password;
-
-    return response.json(returnedUser);
-  }
 }
