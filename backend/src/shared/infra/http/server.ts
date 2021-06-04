@@ -7,6 +7,7 @@ import uploadConfig from '@config/upload';
 import AppError from '@shared/errors/AppError';
 import routes from './routes/index-routes';
 import '@shared/infra/typeorm/index-db';
+import '@shared/container/index';
 
 const app = express();
 app.use(cors());
