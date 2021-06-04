@@ -31,11 +31,12 @@ class AppointmentsRepository implements IAppointmentsRepository {
       // findOne vai retornar uma Promise
       where: { date }, // { date: date }
     });
+
     return findAppointment; // se não encontrar um Appointment, retorna nulo
   }
 
   public async create({ date, provider_id }: ICreateAppointmentDTO): Promise<Appointment> {
-    const appointment = await this.ormRepository.create({
+    const appointment = this.ormRepository.create({
       provider_id,
       date,
     });

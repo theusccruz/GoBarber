@@ -1,12 +1,10 @@
 import { startOfHour } from 'date-fns';
-import { getCustomRepository } from 'typeorm';
 
 import AppError from '@shared/errors/AppError';
-import AppointmentsRepository from '../infra/typeorm/repositories/AppointmentsRepository';
 import Appointment from '../infra/typeorm/entities/Appointment';
 import IAppointmentsRepository from '../repositories/IAppointmentsRepository';
 
-interface RequestDTO {
+interface IRequestDTO {
   provider_id: string;
   date: Date;
 }
@@ -14,14 +12,13 @@ interface RequestDTO {
 class CreateAppointmentService {
   constructor(private appointmentsRepository: IAppointmentsRepository) {}
 
-  public async execute({ provider_id, date }: RequestDTO): Promise<Appointment> {
-    const appointmentsRepository = getCustomRepository(AppointmentsRepository);
+  public async execute({ provider_id, date }: IRequestDTO): Promise<Appointment> {
     /*
 			startOfHour está aqui pois faz parte de uma regra da aplicação,
 			não podem existir agendamentos no mesmo horário
 		*/
     const appointmentDate = startOfHour(date);
-    const findAppointmentInSameDate = await appointmentsRepository.findByDate(
+    const findAppointmentInSameDate = await this.appointmentsRepository.findByDate(
       appointmentDate,
     );
 
@@ -29,7 +26,7 @@ class CreateAppointmentService {
       throw new AppError('Este horário já está agendado!');
     }
 
-    const appointment = appointmentsRepository.create({
+    const appointment = this.appointmentsRepository.create({
       provider_id,
       date: appointmentDate,
     });
