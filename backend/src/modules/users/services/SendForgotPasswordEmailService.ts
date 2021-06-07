@@ -19,7 +19,7 @@ export default class SendForgotPasswordEmailService {
     private mailProvider: IMailProvider,
 
     @inject('UserTokensRepository')
-    private userTokensrepository: IUserTokensRepository,
+    private userTokensRepository: IUserTokensRepository,
   ) {}
 
   public async execute({ email }: IRequestDTO): Promise<void> {
@@ -29,7 +29,7 @@ export default class SendForgotPasswordEmailService {
       throw new AppError('User does not exists', 404);
     }
 
-    await this.userTokensrepository.generate(user.id);
+    await this.userTokensRepository.generate(user.id);
 
     await this.mailProvider.sendMail(email, 'Pedido de recuperação de senha');
   }
