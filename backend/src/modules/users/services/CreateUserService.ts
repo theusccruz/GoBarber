@@ -5,11 +5,12 @@ import User from '../infra/typeorm/entities/User';
 import IUsersRepository from '../repositories/IUsersRepository';
 import IHashProvider from '../providers/HashProvider/models/IHashProvider';
 
-interface RequestDTO {
+interface IRequestDTO {
   name: string;
   password: string;
   email: string;
 }
+
 @injectable()
 export default class CreateUserService {
   constructor(
@@ -20,7 +21,7 @@ export default class CreateUserService {
     private hashProvider: IHashProvider,
   ) {}
 
-  public async execute({ name, password, email }: RequestDTO): Promise<User> {
+  public async execute({ name, password, email }: IRequestDTO): Promise<User> {
     const findUserWithSameEmail = await this.usersRepository.findByEmail(email);
 
     if (findUserWithSameEmail) {

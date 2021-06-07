@@ -7,7 +7,7 @@ import User from '../infra/typeorm/entities/User';
 import IUsersRepository from '../repositories/IUsersRepository';
 import IHashProvider from '../providers/HashProvider/models/IHashProvider';
 
-interface RequestDTO {
+interface IRequestDTO {
   email: string;
   password: string;
 }
@@ -27,7 +27,7 @@ export default class AuthenticateUserService {
     private hashProvider: IHashProvider,
   ) {}
 
-  public async execute({ email, password }: RequestDTO): Promise<Response> {
+  public async execute({ email, password }: IRequestDTO): Promise<Response> {
     const user = await this.usersRepository.findByEmail(email);
 
     if (!user) {

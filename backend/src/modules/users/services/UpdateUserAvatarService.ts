@@ -1,11 +1,11 @@
 import { inject, injectable } from 'tsyringe';
 
 import AppError from '@shared/errors/AppError';
-import IStorageProvider from '@shared/providers/models/IStorageProvider';
+import IStorageProvider from '@shared/providers/StorageProvider/models/IStorageProvider';
 import User from '../infra/typeorm/entities/User';
 import IUsersRepository from '../repositories/IUsersRepository';
 
-interface RequestDTO {
+interface IRequestDTO {
   user_id: string;
   avatarFilename: string;
 }
@@ -20,7 +20,7 @@ export default class UpdateUserAvatarService {
     private storageProvider: IStorageProvider,
   ) {}
 
-  public async execute({ user_id, avatarFilename }: RequestDTO): Promise<User> {
+  public async execute({ user_id, avatarFilename }: IRequestDTO): Promise<User> {
     const user = await this.usersRepository.findById(user_id);
 
     if (!user) {
