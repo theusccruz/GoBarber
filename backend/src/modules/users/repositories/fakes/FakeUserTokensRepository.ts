@@ -3,7 +3,7 @@ import { v4 as uuid } from 'uuid';
 
 import IUserTokensRepository from '../IUserTokensRepository';
 
-export default class UakeUserTokensRepository implements IUserTokensRepository {
+export default class FakeUserTokensRepository implements IUserTokensRepository {
   private userTokens: UserToken[] = [];
 
   public async generate(user_id: string): Promise<UserToken> {
@@ -13,6 +13,8 @@ export default class UakeUserTokensRepository implements IUserTokensRepository {
       id: uuid(),
       token: uuid(),
       user_id,
+      created_at: Date.now(),
+      updated_at: Date.now(),
     });
 
     this.userTokens.push(userToken);
