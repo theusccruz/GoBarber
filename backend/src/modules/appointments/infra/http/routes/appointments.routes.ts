@@ -20,7 +20,7 @@ appointmentsRouter.use(ensureAuthenticated);
 // });
 
 appointmentsRouter.post('/', async (request, response) => {
-  appointmentsController.create(request, response);
+  await appointmentsController.create(request, response);
 });
 
 export default appointmentsRouter;
