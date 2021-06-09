@@ -1,7 +1,8 @@
-import AuthenticateUserService from '@modules/users/services/AuthenticateUserService';
 import { Request, Response } from 'express';
 import { container } from 'tsyringe';
-import UserAuthenticated from '../../interfaces/IReturnedUser';
+import { classToClass } from 'class-transformer';
+
+import AuthenticateUserService from '@modules/users/services/AuthenticateUserService';
 
 export default class SessionsController {
   public async create(request: Request, response: Response): Promise<Response> {
@@ -14,9 +15,6 @@ export default class SessionsController {
       password,
     });
 
-    const userAuthenticated: UserAuthenticated = user;
-    delete userAuthenticated.password;
-
-    return response.status(201).json({ user: userAuthenticated, token });
+    return response.status(201).json({ user: classToClass(user), token });
   }
 }
