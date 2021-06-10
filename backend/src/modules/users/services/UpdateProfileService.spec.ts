@@ -3,20 +3,20 @@ import FakeUsersRepository from '../repositories/fakes/FakeUsersRepository';
 import FakeHashProvider from '../providers/HashProvider/fakes/FakeHashProvider';
 import UpdateProfileService from './UpdateProfileService';
 
-let fakeUserRepository: FakeUsersRepository;
+let fakeUsersRepository: FakeUsersRepository;
 let fakeHashProvider: FakeHashProvider;
 let updateProfileService: UpdateProfileService;
 
 describe('UpdateProfile', () => {
   beforeEach(() => {
-    fakeUserRepository = new FakeUsersRepository();
+    fakeUsersRepository = new FakeUsersRepository();
     fakeHashProvider = new FakeHashProvider();
 
-    updateProfileService = new UpdateProfileService(fakeUserRepository, fakeHashProvider);
+    updateProfileService = new UpdateProfileService(fakeUsersRepository, fakeHashProvider);
   });
 
   it('should be able update the profile', async () => {
-    const user = await fakeUserRepository.create({
+    const user = await fakeUsersRepository.create({
       name: 'Matheus',
       email: 'matheus@teste.com',
       password: '123456',
@@ -33,13 +33,13 @@ describe('UpdateProfile', () => {
   });
 
   it('should not be able to change email already used by another user', async () => {
-    await fakeUserRepository.create({
+    await fakeUsersRepository.create({
       name: 'Matheus',
       email: 'matheus@teste.com',
       password: '123456',
     });
 
-    const user = await fakeUserRepository.create({
+    const user = await fakeUsersRepository.create({
       name: 'Matias',
       email: 'matias@teste.com',
       password: '123456789',
@@ -55,7 +55,7 @@ describe('UpdateProfile', () => {
   });
 
   it('should be able to update the password', async () => {
-    const user = await fakeUserRepository.create({
+    const user = await fakeUsersRepository.create({
       name: 'Matheus',
       email: 'matheus@teste.com',
       password: '123456',
@@ -73,7 +73,7 @@ describe('UpdateProfile', () => {
   });
 
   it('should not be able to update password without entering previous password', async () => {
-    const user = await fakeUserRepository.create({
+    const user = await fakeUsersRepository.create({
       name: 'Matheus',
       email: 'matheus@teste.com',
       password: '123456',
@@ -90,7 +90,7 @@ describe('UpdateProfile', () => {
   });
 
   it('should not be able to update password with wrong old password', async () => {
-    const user = await fakeUserRepository.create({
+    const user = await fakeUsersRepository.create({
       name: 'Matheus',
       email: 'matheus@teste.com',
       password: '123456',

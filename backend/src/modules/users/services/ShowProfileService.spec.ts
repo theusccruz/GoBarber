@@ -2,18 +2,18 @@ import AppError from '@shared/errors/AppError';
 import FakeUsersRepository from '../repositories/fakes/FakeUsersRepository';
 import ShowProfileService from './ShowProfileService';
 
-let fakeUserRepository: FakeUsersRepository;
+let fakeUsersRepository: FakeUsersRepository;
 let showProfileService: ShowProfileService;
 
 describe('ShowProfile', () => {
   beforeEach(() => {
-    fakeUserRepository = new FakeUsersRepository();
+    fakeUsersRepository = new FakeUsersRepository();
 
-    showProfileService = new ShowProfileService(fakeUserRepository);
+    showProfileService = new ShowProfileService(fakeUsersRepository);
   });
 
   it('should be able show profile user', async () => {
-    const user = await fakeUserRepository.create({
+    const user = await fakeUsersRepository.create({
       name: 'Matheus',
       email: 'matheus@teste.com',
       password: '123456',

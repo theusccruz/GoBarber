@@ -13,6 +13,13 @@ import '@shared/container/index';
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use((request: Request, response: Response, next: NextFunction) => {
+  const { method, url } = request;
+  const logRequest = `[${method.toUpperCase()}] ${url}`;
+
+  console.log(logRequest);
+  return next();
+});
 app.use('/files', express.static(uploadConfig.tmpFolder));
 app.use(routes);
 
@@ -30,7 +37,6 @@ app.use((error: Error, request: Request, response: Response, next: NextFunction)
     message: 'Internal server error',
   });
 });
-
 app.listen(3333, () => {
   console.log('Backend started 🔥🔥🔥');
 });

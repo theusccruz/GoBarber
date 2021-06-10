@@ -3,20 +3,20 @@ import FakeStorageProvider from '@shared/providers/StorageProvider/fakes/FakeSto
 import FakeUsersRepository from '../repositories/fakes/FakeUsersRepository';
 import UpdateUserAvatarService from './UpdateUserAvatarService';
 
-let fakeUserRepository: FakeUsersRepository;
+let fakeUsersRepository: FakeUsersRepository;
 let fakeStorageProvider: FakeStorageProvider;
 let updateUserAvatar: UpdateUserAvatarService;
 
 describe('UpdateUserAvatar', () => {
   beforeEach(() => {
-    fakeUserRepository = new FakeUsersRepository();
+    fakeUsersRepository = new FakeUsersRepository();
     fakeStorageProvider = new FakeStorageProvider();
 
-    updateUserAvatar = new UpdateUserAvatarService(fakeUserRepository, fakeStorageProvider);
+    updateUserAvatar = new UpdateUserAvatarService(fakeUsersRepository, fakeStorageProvider);
   });
 
   it('should be beable to update avatar', async () => {
-    const user = await fakeUserRepository.create({
+    const user = await fakeUsersRepository.create({
       name: 'Matheus',
       email: 'matheus@teste.com',
       password: '123456789',
@@ -43,7 +43,7 @@ describe('UpdateUserAvatar', () => {
     const deleteFile = jest.spyOn(fakeStorageProvider, 'deleteFile');
     // o jest vai espionar a função deleteFile e ver se ela será disparada
 
-    const user = await fakeUserRepository.create({
+    const user = await fakeUsersRepository.create({
       name: 'Matheus',
       email: 'matheus@teste.com',
       password: '123456789',

@@ -4,28 +4,28 @@ import FakeUsersRepository from '../repositories/fakes/FakeUsersRepository';
 import ResetPasswordService from './ResetPasswordService';
 import FakeUserTokensRepository from '../repositories/fakes/FakeUserTokensRepository';
 
-let fakeUserRepository: FakeUsersRepository;
+let fakeUsersRepository: FakeUsersRepository;
 let fakeHashProvider: FakeHashProvider;
 let fakeUserTokensRepository: FakeUserTokensRepository;
 let resetPasswordService: ResetPasswordService;
 
 describe('ResetPasswordService', () => {
   beforeEach(() => {
-    fakeUserRepository = new FakeUsersRepository();
+    fakeUsersRepository = new FakeUsersRepository();
     fakeUserTokensRepository = new FakeUserTokensRepository();
     fakeHashProvider = new FakeHashProvider();
 
     resetPasswordService = new ResetPasswordService(
       fakeHashProvider,
       fakeUserTokensRepository,
-      fakeUserRepository,
+      fakeUsersRepository,
     );
   }); // cria variáveis antes da execução de cada um dos testes
 
   it('should be able to reset the password', async () => {
     const generateHash = jest.spyOn(fakeHashProvider, 'generateHash');
 
-    const user = await fakeUserRepository.create({
+    const user = await fakeUsersRepository.create({
       name: 'Matheus',
       email: 'matheus@teste.com',
       password: '123456',
@@ -38,7 +38,7 @@ describe('ResetPasswordService', () => {
       token,
     });
 
-    const updatedUser = await fakeUserRepository.findById(user.id);
+    const updatedUser = await fakeUsersRepository.findById(user.id);
 
     expect(generateHash).toHaveBeenCalledWith('123987');
     expect(updatedUser?.password).toBe('123987');
@@ -65,7 +65,7 @@ describe('ResetPasswordService', () => {
   });
 
   it('should not be able to reset the password if passed more than 2 hours', async () => {
-    const user = await fakeUserRepository.create({
+    const user = await fakeUsersRepository.create({
       name: 'Matheus',
       email: 'matheus@teste.com',
       password: '123456',
