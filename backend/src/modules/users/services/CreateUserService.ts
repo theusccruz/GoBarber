@@ -25,7 +25,7 @@ export default class CreateUserService {
     const findUserWithSameEmail = await this.usersRepository.findByEmail(email);
 
     if (findUserWithSameEmail) {
-      throw new AppError('Este email já possui cadastro');
+      throw new AppError('This email is already registered');
     }
 
     const hashedPassword = await this.hashProvider.generateHash(password);

@@ -37,6 +37,13 @@ class Appointment {
   @JoinColumn({ name: 'provider_id' }) // informa qual coluna do banco vai identificar esse relacionamento
   provider: User; // relacionamento sendo feito, agora essa propriedade tem acesso aos dados de User
 
+  @Column()
+  user_id: string;
+
+  @ManyToOne(() => User)
+  @JoinColumn({ name: 'user_id' })
+  user: User;
+
   @Column('timestamp with time zone')
   date: Date;
 
