@@ -4,6 +4,7 @@ import ICreateAppointmentDTO from '@modules/appointments/dtos/ICreateAppointment
 import IFindAllInMonthFromProviderDTO from '@modules/appointments/dtos/IFindAllInMonthFromProviderDTO';
 import IFindAllInDayFromProvider from '@modules/appointments/dtos/IFindAllInDayFromProvider';
 import Appointment from '../entities/Appointment';
+
 /*
 	@EntityRepository vai pertencer à uma classe que crie um repostório
 	personalizado. Repositórios personalizados contém os métodos que realizam
@@ -61,7 +62,7 @@ class AppointmentsRepository implements IAppointmentsRepository {
     // caso o mês tenha menos de dois dígitos, adiciona um zero a esquerda do número
     const parsedMonth = String(month).padStart(2, '0');
 
-    const appointments = this.ormRepository.find({
+    const appointments = await this.ormRepository.find({
       /*
         - Raw() permite executar queries manuais no DB
          -to_char() função do postgres que transforma dados em string
@@ -89,12 +90,12 @@ class AppointmentsRepository implements IAppointmentsRepository {
     const parsedDay = String(day).padStart(2, '0');
     const parsedMonth = String(month).padStart(2, '0');
 
-    const appointments = this.ormRepository.find({
+    const appointments = await this.ormRepository.find({
       where: {
         provider_id,
         date: Raw(
           dateFieldName =>
-            `to_char(${dateFieldName}), DD-MM-YYY = '${parsedDay}-${parsedMonth}-${year}'`,
+            `to_char(${dateFieldName}, 'DD-MM-YYYY') = '${parsedDay}-${parsedMonth}-${year}'`,
         ),
       },
     });

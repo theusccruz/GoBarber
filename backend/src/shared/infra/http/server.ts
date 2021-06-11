@@ -3,12 +3,11 @@ import 'express-async-errors';
 import 'reflect-metadata'; // ativa o suporte aos decorators @
 import cors from 'cors';
 
+import '@shared/infra/typeorm/index-db';
+import '@shared/container/index';
 import uploadConfig from '@config/upload';
 import AppError from '@shared/errors/AppError';
 import routes from './routes/index-routes';
-
-import '@shared/infra/typeorm/index-db';
-import '@shared/container/index';
 
 const app = express();
 app.use(cors());
@@ -34,7 +33,7 @@ app.use((error: Error, request: Request, response: Response, next: NextFunction)
 
   return response.status(500).json({
     status: 'error',
-    message: 'Internal server error',
+    message: error.message,
   });
 });
 app.listen(3333, () => {

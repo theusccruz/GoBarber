@@ -28,6 +28,10 @@ class CreateAppointmentService {
       throw new AppError('Provider not found', 404);
     }
 
+    if (provider_id === user_id) {
+      throw new AppError('It is not possible to make an appointment with yourself');
+    }
+
     /*
 			startOfHour está aqui pois faz parte de uma regra da aplicação,
 			não podem existir agendamentos no mesmo horário

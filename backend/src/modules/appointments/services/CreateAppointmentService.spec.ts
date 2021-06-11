@@ -94,4 +94,50 @@ describe('CreateAppointment', () => {
       }),
     ).rejects.toBeInstanceOf(AppError);
   });
+
+  it('should be not able to create an appointment with same user as provider', async () => {
+    jest.spyOn(Date, 'now').mockImplementationOnce(() => {
+      return new Date(2021, 6, 10, 15).getTime();
+    });
+
+    const provider = await fakeUsersRepository.create({
+      name: 'Matheus',
+      email: 'matheus@teste.com',
+      password: '123456',
+    });
+
+    await expect(
+      createAppointment.execute({
+        date: new Date(2021, 6, 10, 16),
+        provider_id: provider.id,
+        user_id: provider.id,
+      }),
+    ).rejects.toBeInstanceOf(AppError);
+  });
+
+  it('should not be able to create an appointment if the time is before 8AM or after 5PM', async () => {
+    const provider = await fakeUsersRepository.create({
+      name: 'Matheus',
+      email: 'matheus@teste.com',
+      password: '123456',
+    });
+
+    await expect(
+      createAppointment.execute({
+        // 5h
+        date: new Date(2021, 6, 10, 5),
+        provider_id: provider.id,
+        user_id: 'user',
+      }),
+    ).rejects.toBeInstanceOf(AppError);
+
+    await expect(
+      createAppointment.execute({
+        // 5h
+        date: new Date(2021, 6, 10, 19),
+        provider_id: provider.id,
+        user_id: 'user',
+      }),
+    ).rejects.toBeInstanceOf(AppError);
+  });
 });
