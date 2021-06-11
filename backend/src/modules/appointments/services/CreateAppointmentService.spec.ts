@@ -21,6 +21,10 @@ describe('CreateAppointment', () => {
   });
 
   it('should be beable to create a new appointment', async () => {
+    jest.spyOn(Date, 'now').mockImplementationOnce(() => {
+      return new Date(2021, 6, 10, 15).getTime();
+    });
+
     const provider = await fakeUsersRepository.create({
       name: 'Matheus',
       email: 'matheus@teste.com',
@@ -28,7 +32,7 @@ describe('CreateAppointment', () => {
     });
 
     const appointment = await createAppointment.execute({
-      date: new Date(),
+      date: new Date(2021, 6, 10, 16),
       provider_id: provider.id,
       user_id: '32132132',
     });
@@ -44,7 +48,7 @@ describe('CreateAppointment', () => {
       password: '123456',
     });
 
-    const appointmentDate = new Date(2020, 4, 10, 11);
+    const appointmentDate = new Date(2021, 7, 10, 11);
 
     await createAppointment.execute({
       date: appointmentDate,
@@ -76,6 +80,16 @@ describe('CreateAppointment', () => {
       createAppointment.execute({
         date: new Date(2021, 6, 10, 10),
         provider_id: provider.id,
+        user_id: '32132132',
+      }),
+    ).rejects.toBeInstanceOf(AppError);
+  });
+
+  it('should not be able to create appointments if the provider does not exist', async () => {
+    await expect(
+      createAppointment.execute({
+        date: new Date(2021, 6, 10, 10),
+        provider_id: 'incorrect provider',
         user_id: '32132132',
       }),
     ).rejects.toBeInstanceOf(AppError);

@@ -15,7 +15,7 @@ app.use(cors());
 app.use(express.json());
 app.use((request: Request, response: Response, next: NextFunction) => {
   const { method, url } = request;
-  const logRequest = `[${method.toUpperCase()}] ${url}`;
+  const logRequest = `[${method.toUpperCase()}] ${url} ✔🔴⚪⚫`;
 
   console.log(logRequest);
   return next();

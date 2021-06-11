@@ -37,7 +37,7 @@ class CreateAppointmentService {
       throw new AppError('This time cannot be scheduled');
     }
 
-    if (isBefore(date, Date.now())) {
+    if (isBefore(appointmentDate, Date.now())) {
       throw new AppError("You can't create an appointment on a past date");
     }
 
