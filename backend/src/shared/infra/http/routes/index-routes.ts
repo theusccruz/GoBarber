@@ -13,6 +13,7 @@ const routes = Router();
 	tudo o que vier depois de "/appointments" será passado para o
 	appointmentsRouter
  */
+
 routes.use('/appointments', appointmentsRouter);
 routes.use('/users', usersRouter);
 routes.use('/sessions', sessionsRouter);

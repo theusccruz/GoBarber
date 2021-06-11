@@ -1,4 +1,4 @@
-import { container } from 'tsyringe';
+import { container, delay } from 'tsyringe';
 
 import '@modules/users/providers/index'; // container de usuário
 import '@shared/providers/index';
@@ -14,15 +14,18 @@ import UserTokensRepository from '@modules/users/infra/typeorm/repositories/User
 
 container.registerSingleton<IAppointmentsRepository>(
   'AppointmentsRepository',
-  AppointmentsRepository,
+  delay(() => AppointmentsRepository),
 );
 /*
   parâmetro 1: id do repositório
 */
 
-container.registerSingleton<IUsersRepository>('UsersRepository', UsersRepository);
+container.registerSingleton<IUsersRepository>(
+  'UsersRepository',
+  delay(() => UsersRepository),
+);
 
 container.registerSingleton<IUserTokensRepository>(
   'UserTokensRepository',
-  UserTokensRepository,
+  delay(() => UserTokensRepository),
 );
