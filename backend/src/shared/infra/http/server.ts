@@ -33,7 +33,7 @@ app.use((error: Error, request: Request, response: Response, next: NextFunction)
 
   return response.status(500).json({
     status: 'error',
-    message: error.message,
+    message: error.message, // "Internal server error",
   });
 });
 app.listen(3333, () => {
