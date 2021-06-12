@@ -1,6 +1,7 @@
 import express, { Request, Response, NextFunction } from 'express';
 import 'express-async-errors';
 import 'reflect-metadata'; // ativa o suporte aos decorators @
+import { errors } from 'celebrate';
 import cors from 'cors';
 
 import '@shared/infra/typeorm/index-db';
@@ -21,6 +22,7 @@ app.use((request: Request, response: Response, next: NextFunction) => {
 });
 app.use('/files', express.static(uploadConfig.tmpFolder));
 app.use(routes);
+app.use(errors());
 
 // middleware que trata erros
 app.use((error: Error, request: Request, response: Response, next: NextFunction) => {

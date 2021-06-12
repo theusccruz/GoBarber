@@ -1,12 +1,22 @@
 import { Router } from 'express';
+import { celebrate, Joi, Segments } from 'celebrate';
 
 import SessionsController from '../../controllers/SessionsController';
 
 const sessionsRouter = Router();
 const sessionsController = new SessionsController();
 
-sessionsRouter.post('/', async (request, response) => {
-  await sessionsController.create(request, response);
-});
+sessionsRouter.post(
+  '/',
+  celebrate({
+    [Segments.BODY]: {
+      email: Joi.string().email().required(),
+      password: Joi.string().required(),
+    },
+  }),
+  async (request, response) => {
+    await sessionsController.create(request, response);
+  },
+);
 
 export default sessionsRouter;
