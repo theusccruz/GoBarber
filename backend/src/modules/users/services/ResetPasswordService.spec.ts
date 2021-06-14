@@ -86,4 +86,21 @@ describe('ResetPasswordService', () => {
       }),
     ).rejects.toBeInstanceOf(AppError);
   });
+
+  it('should not be able to reset the password if new password is same as old password', async () => {
+    const user = await fakeUsersRepository.create({
+      name: 'Matheus',
+      email: 'matheus@teste.com',
+      password: '123456',
+    });
+
+    const { token } = await fakeUserTokensRepository.generate(user.id);
+
+    await expect(
+      resetPasswordService.execute({
+        password: '123456',
+        token,
+      }),
+    ).rejects.toBeInstanceOf(AppError);
+  });
 });

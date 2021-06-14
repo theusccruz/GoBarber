@@ -50,6 +50,10 @@ export default class UpdateProfileService {
     }
 
     if (password && old_password) {
+      if (password === old_password) {
+        throw new AppError('The new password cannot be the same as the previous password.');
+      }
+
       const checkold_password = await this.hashProvider.compareHash(
         old_password,
         user.password,

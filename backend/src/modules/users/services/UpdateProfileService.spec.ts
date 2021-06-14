@@ -118,4 +118,22 @@ describe('UpdateProfile', () => {
       }),
     ).rejects.toBeInstanceOf(AppError);
   });
+
+  it('should not be able to update the password if new password is same as old password', async () => {
+    const user = await fakeUsersRepository.create({
+      name: 'Matheus',
+      email: 'matheus@teste.com',
+      password: '123456',
+    });
+
+    await expect(
+      updateProfileService.execute({
+        user_id: user.id,
+        name: 'Matias',
+        email: 'matheus@teste2.com',
+        password: '123456',
+        old_password: '123456',
+      }),
+    ).rejects.toBeInstanceOf(AppError);
+  });
 });

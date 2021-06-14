@@ -42,6 +42,14 @@ export default class ResetPasswordService {
       throw new AppError('Token expired');
     }
 
+    const compareNewAndOldPassword = await this.hashProvider.compareHash(
+      password,
+      user.password,
+    );
+    if (compareNewAndOldPassword) {
+      throw new AppError('The new password cannot be the same as the previous password.');
+    }
+
     user.password = await this.hashProvider.generateHash(password);
 
     await this.usersRepository.save(user);
