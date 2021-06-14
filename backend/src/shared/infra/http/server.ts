@@ -1,6 +1,8 @@
+import 'reflect-metadata'; // ativa o suporte aos decorators @
+import 'dotenv/config';
+
 import express, { Request, Response, NextFunction } from 'express';
 import 'express-async-errors';
-import 'reflect-metadata'; // ativa o suporte aos decorators @
 import { errors } from 'celebrate';
 import cors from 'cors';
 
@@ -20,7 +22,7 @@ app.use((request: Request, response: Response, next: NextFunction) => {
   console.log(logRequest);
   return next();
 });
-app.use('/files', express.static(uploadConfig.tmpFolder));
+app.use('/files', express.static(uploadConfig.uploadsFolder));
 app.use(routes);
 app.use(errors());
 
