@@ -56,7 +56,7 @@ class CreateAppointmentService {
       throw new AppError('This time is already scheduled');
     }
 
-    const appointment = this.appointmentsRepository.create({
+    const appointment = await this.appointmentsRepository.create({
       provider_id,
       date: appointmentDate,
       user_id,
