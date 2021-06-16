@@ -40,7 +40,7 @@ class Appointment {
   @Column()
   user_id: string;
 
-  @ManyToOne(() => User)
+  @ManyToOne(() => User) // eager e lazy mostram os dados do relacionamento
   @JoinColumn({ name: 'user_id' })
   user: User;
 

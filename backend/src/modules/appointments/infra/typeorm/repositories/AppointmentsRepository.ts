@@ -29,10 +29,16 @@ class AppointmentsRepository implements IAppointmentsRepository {
 		Aqui são estendidas as funções presentes na classe Repository (typeOrm),
 		essas funções tem ação direta no banco de dados
 	*/
-  public async findByDate(date: Date): Promise<Appointment | undefined> {
+  public async findByDate(
+    date: Date,
+    provider_id: string,
+  ): Promise<Appointment | undefined> {
     const findAppointment = await this.ormRepository.findOne({
       // findOne vai retornar uma Promise
-      where: { date }, // { date: date }
+      where: {
+        date,
+        provider_id,
+      }, // { date: date }
     });
 
     return findAppointment; // se não encontrar um Appointment, retorna nulo
@@ -98,6 +104,7 @@ class AppointmentsRepository implements IAppointmentsRepository {
             `to_char(${dateFieldName}, 'DD-MM-YYYY') = '${parsedDay}-${parsedMonth}-${year}'`,
         ),
       },
+      relations: ['user'],
     });
 
     return appointments;

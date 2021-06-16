@@ -1,8 +1,8 @@
 import { injectable, inject } from 'tsyringe';
+import { classToClass } from 'class-transformer';
 
 import Appointment from '@modules/appointments/infra/typeorm/entities/Appointment';
 import ICacheProvider from '@shared/providers/CacheProvider/models/ICacheProvider';
-import { isThisSecond } from 'date-fns';
 import IAppointmentsRepository from '../repositories/IAppointmentsRepository';
 
 interface IRequestDTO {
@@ -42,7 +42,7 @@ export default class ListProviderAppointmentsService {
 
       await this.cacheProvider.save(
         `provider-appointments:${provider_id}:${year}-${month}-${day}`,
-        appointments,
+        classToClass(appointments),
       );
     }
 
