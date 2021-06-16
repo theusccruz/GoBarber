@@ -10,11 +10,13 @@ import '@shared/infra/typeorm/index-db';
 import '@shared/container/index';
 import uploadConfig from '@config/upload';
 import AppError from '@shared/errors/AppError';
+import rateLimiter from './middlewares/RateLimiter';
 import routes from './routes/index-routes';
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use(rateLimiter); // Bloqueia excesso de requisições
 app.use((request: Request, response: Response, next: NextFunction) => {
   const { method, url } = request;
   const logRequest = `[${method.toUpperCase()}] ${url} ✔🔴⚪⚫`;
