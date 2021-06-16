@@ -12,6 +12,6 @@ export default class ProvidersService {
       user_id: request.user.id,
     });
 
-    return response.json(classToClass(providers));
+    return response.status(200).json(classToClass(providers));
   }
 }

@@ -32,6 +32,8 @@ export default class ListProviderAppointmentsService {
       `provider-appointments:${provider_id}:${year}-${month}-${day}`,
     );
 
+    console.log(`provider-appointments:${provider_id}:${year}-${month}-${day}`);
+
     if (!appointments) {
       appointments = await this.appointmentsRepository.findAllInDayFromProvider({
         day,

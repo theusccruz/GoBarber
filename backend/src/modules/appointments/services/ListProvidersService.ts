@@ -1,4 +1,5 @@
 import { inject, injectable } from 'tsyringe';
+import { classToClass } from 'class-transformer';
 
 import IUsersRepository from '@modules/users/repositories/IUsersRepository';
 import User from '@modules/users/infra/typeorm/entities/User';
@@ -26,7 +27,7 @@ export default class ListProvidersService {
         except_user_id: user_id,
       });
 
-      await this.cacheProvider.save(`providers-list:${user_id}`, providers);
+      await this.cacheProvider.save(`providers-list:${user_id}`, classToClass(providers));
     }
 
     return providers;
