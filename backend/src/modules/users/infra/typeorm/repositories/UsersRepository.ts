@@ -1,5 +1,5 @@
 import IFindAllProvidersDTO from '@modules/users/dtos/IFindAllProvidersDTO';
-import { ICreateUserDTO } from '@modules/users/dtos/ICreateUserDTO';
+import ICreateUserDTO from '@modules/users/dtos/ICreateUserDTO';
 import IUsersRepository from '@modules/users/repositories/IUsersRepository';
 import { getRepository, Repository, Not } from 'typeorm';
 import User from '../entities/User';
