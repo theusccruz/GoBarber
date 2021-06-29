@@ -1,11 +1,15 @@
 import React, { ButtonHTMLAttributes } from 'react';
+import { LoadingOutlined } from '@ant-design/icons';
+
 import { Container } from './style';
 
-type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement>;
+type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
+  loading?: boolean;
+};
 
-const Button: React.FC<ButtonProps> = ({ children, ...rest }) => (
+const Button: React.FC<ButtonProps> = ({ loading, children, ...rest }) => (
   <Container type="button" {...rest}>
-    {children}
+    {loading ? <LoadingOutlined style={{ fontSize: 24 }} /> : children}
   </Container>
 );
 
