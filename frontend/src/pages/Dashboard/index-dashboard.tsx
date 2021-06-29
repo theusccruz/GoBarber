@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import { FiClock, FiPower } from 'react-icons/fi';
 import DayPicker, { DayModifiers } from 'react-day-picker';
 import 'react-day-picker/lib/style.css';
@@ -41,20 +41,37 @@ const Dashboard: React.FC = () => {
     setCurrentMonth(month);
   }, []);
 
+  const token = localStorage.getItem('@GoBarber:token');
+
   useEffect(() => {
     async function getMonthAvailability() {
       const response = await api.get(`/providers/${user.id}/month-availability`, {
         params: {
-          yaer: currentMonth.getFullYear(),
           month: currentMonth.getMonth() + 1,
+          year: currentMonth.getFullYear(),
         },
       });
+      console.log(response);
 
       setMonthAvailability(response.data);
     }
 
     getMonthAvailability();
-  }, [currentMonth, user.id]);
+  }, [currentMonth, user.id, token]);
+
+  const disableDays = useMemo(() => {
+    const dates = monthAvailability
+      .filter(monthDay => {
+        return monthDay.available === false;
+      })
+      .map(monthDay => {
+        const year = currentMonth.getFullYear();
+        const month = currentMonth.getMonth();
+
+        return new Date(year, month, monthDay.day);
+      });
+    return dates;
+  }, [currentMonth, monthAvailability]);
 
   return (
     <Container>
@@ -168,6 +185,7 @@ const Dashboard: React.FC = () => {
               {
                 daysOfWeek: [0, 6],
               },
+              ...disableDays,
             ]}
             selectedDays={selectedDate}
             modifiers={{
