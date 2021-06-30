@@ -42,7 +42,7 @@ export default class ListProviderMonthAvailabilityService {
         return getDate(appointment.date) === day;
       });
 
-      const selectedDate = new Date(year, month - 1, day, 23, 59, 59);
+      const selectedDate = new Date(year, month - 1, day, 17, 0, 0);
 
       return {
         day,
