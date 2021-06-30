@@ -1,7 +1,4 @@
-// eslint-disable-next-line prettier/prettier
-import
-React,
-{
+import React, {
   InputHTMLAttributes,
   useCallback,
   useEffect,
@@ -16,9 +13,10 @@ import { Container, Error } from './style';
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   name: string;
+  containerStyle?: React.CSSProperties;
   icon: React.ComponentType<IconBaseProps>;
 }
-const Input: React.FC<InputProps> = ({ name, icon: Icon, ...rest }) => {
+const Input: React.FC<InputProps> = ({ name, icon: Icon, containerStyle, ...rest }) => {
   const [isFocused, setIsFocused] = useState(false);
   const [isFilled, setIsFilled] = useState(false);
 
@@ -47,10 +45,15 @@ const Input: React.FC<InputProps> = ({ name, icon: Icon, ...rest }) => {
   }, [fieldName, registerField]);
 
   return (
-    <Container isErrored={!!error} isFilled={isFilled} isFocused={isFocused}>
+    <Container
+      style={containerStyle}
+      isErrored={!!error}
+      isFilled={isFilled}
+      isFocused={isFocused}
+    >
       {Icon && <Icon size={28} />}
-      {/* eslint-disable-next-line prettier/prettier */}
       <input
+        name={name}
         onFocus={handleInputFocus}
         onBlur={handleOnBlur}
         defaultValue={defaultValue}

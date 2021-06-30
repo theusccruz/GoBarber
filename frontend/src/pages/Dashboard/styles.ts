@@ -1,7 +1,11 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { shade } from 'polished';
 import ArrowLeftIcon from '../../assets/ArrowLeftIcon.svg';
 import ArrowRightIcon from '../../assets/ArrowRightIcon.svg';
+
+type AppointmentItemProps = {
+  isPast?: boolean;
+};
 
 export const Container = styled.div`
   height: 100vh;
@@ -62,8 +66,13 @@ export const Profile = styled.div`
       color: #f4ede8;
     }
 
-    strong {
+    a {
+      text-decoration: none;
       color: #ff9000;
+
+      &:hover {
+        opacity: 0.7;
+      }
     }
   }
 `;
@@ -71,6 +80,8 @@ export const Profile = styled.div`
 export const Content = styled.main`
   max-width: 1120px;
   margin: 40px auto;
+
+  padding-bottom: 15px;
 
   display: flex;
 `;
@@ -167,7 +178,7 @@ export const Section = styled.section`
   margin-top: 40px;
 
   > strong {
-    color: #999591;
+    color: #f4ede8;
 
     font-size: 20px;
     line-height: 26px;
@@ -183,9 +194,15 @@ export const Section = styled.section`
   }
 `;
 
-export const AppointmentItem = styled.div`
+export const AppointmentItem = styled.div<AppointmentItemProps>`
   display: flex;
   align-items: center;
+
+  ${props =>
+    props.isPast &&
+    css`
+      opacity: 0.45;
+    `}
 
   & + div {
     margin-top: 12px;
