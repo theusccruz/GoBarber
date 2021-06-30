@@ -177,9 +177,13 @@ export const Section = styled.section`
     padding-bottom: 13px;
     margin-bottom: 13px;
   }
+
+  > p {
+    color: #999591;
+  }
 `;
 
-export const Appointment = styled.div`
+export const AppointmentItem = styled.div`
   display: flex;
   align-items: center;
 
@@ -189,6 +193,7 @@ export const Appointment = styled.div`
 
   span {
     margin-left: auto;
+    width: 60px;
 
     display: flex;
     align-items: center;
@@ -225,7 +230,7 @@ export const Appointment = styled.div`
 `;
 
 export const Calendar = styled.aside`
-  width: 350px;
+  width: 380px;
 
   .DayPicker {
     border-radius: 10px;
