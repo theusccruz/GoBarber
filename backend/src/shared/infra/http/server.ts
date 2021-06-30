@@ -16,8 +16,8 @@ import routes from './routes/index-routes';
 const app = express();
 app.use(cors());
 app.use(express.json());
-app.use(rateLimiter); // Bloqueia excesso de requisições
 app.use('/files', express.static(uploadConfig.uploadsFolder));
+app.use(rateLimiter); // Bloqueia excesso de requisições
 app.use(routes);
 app.use(errors());
 
