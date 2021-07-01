@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { FiMail, FiLock, FiUser, FiArrowLeft } from 'react-icons/fi';
 import { Form } from '@unform/web';
 import { FormHandles } from '@unform/core';
@@ -25,6 +25,8 @@ const SignUp: React.FC = () => {
 
   const formRef = useRef<FormHandles>(null);
 
+  const [buttonLoading, setButtonLoading] = useState(false);
+
   const submitForm = useCallback(
     async (data: SignUpUserData) => {
       formRef.current?.setErrors({});
@@ -39,6 +41,8 @@ const SignUp: React.FC = () => {
         await schema.validate(data, {
           abortEarly: false,
         });
+
+        setButtonLoading(true);
 
         const response = await api.post<SignUpUserData>(
           '/users',
@@ -58,7 +62,7 @@ const SignUp: React.FC = () => {
         });
 
         history.push('/'); // redireciona para a página de login
-      } catch (error) {
+      } catch (error: any) {
         if (error instanceof Yup.ValidationError) {
           const errors = getValidationErrors(error);
           formRef.current?.setErrors(errors);
@@ -66,11 +70,23 @@ const SignUp: React.FC = () => {
           return;
         }
 
+        if (error.response && String(error.response.status).substr(0, 1) === '4') {
+          addToast({
+            title: error.response.data.message,
+            description: 'Por favor tente novamente',
+            type: 'alert',
+          });
+
+          return;
+        }
+
         addToast({
-          title: 'Ocorreu um erro ao cadastrar o usuário',
+          title: 'Ocorreu um erro ao cadastrar seu usuário',
           description: 'Por favor tente novamente',
           type: 'error',
         });
+      } finally {
+        setButtonLoading(false);
       }
     },
     [addToast, history],
@@ -90,7 +106,9 @@ const SignUp: React.FC = () => {
             <Input name="email" icon={FiMail} type="text" placeholder="Email" />
             <Input name="password" icon={FiLock} type="password" placeholder="Senha" />
 
-            <Button type="submit">Cadastrar</Button>
+            <Button loading={buttonLoading} type="submit">
+              Cadastrar
+            </Button>
           </Form>
 
           <Link to="/">

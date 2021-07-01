@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { FiLock } from 'react-icons/fi';
 import { Form } from '@unform/web';
 import { FormHandles } from '@unform/core';
@@ -25,6 +25,8 @@ const ResetPassword: React.FC = () => {
   const history = useHistory();
   const location = useLocation();
 
+  const [buttonLoading, setButtonLoading] = useState(false);
+
   const submitForm = useCallback(
     async (data: FormData) => {
       formRef.current?.setErrors({});
@@ -41,6 +43,8 @@ const ResetPassword: React.FC = () => {
         await schema.validate(data, {
           abortEarly: false,
         });
+
+        setButtonLoading(true);
 
         const token = location.search.replace('?token=', '');
         if (!token) {
@@ -75,12 +79,11 @@ const ResetPassword: React.FC = () => {
           return;
         }
 
-        if (
-          error.message !== 'The new password cannot be the same as the previous password.'
-        ) {
+        if (error.response && String(error.response.status).substr(0, 1) === '4') {
           addToast({
-            title: 'Sua nova senha não pode ser igual a anterior',
-            type: 'error',
+            title: error.response.data.message,
+            description: 'Por favor tente novamente',
+            type: 'alert',
             duration: 4000,
           });
 
@@ -89,9 +92,11 @@ const ResetPassword: React.FC = () => {
 
         addToast({
           title: 'Ocorreu um erro ao redefinir sua senha',
-          description: 'Tente novamente',
+          description: 'Por favor tente novamente',
           type: 'error',
         });
+      } finally {
+        setButtonLoading(false);
       }
     },
     [addToast, history, location],
@@ -115,7 +120,9 @@ const ResetPassword: React.FC = () => {
               placeholder="Confirme sua nova senha"
             />
 
-            <Button type="submit">Redefinir</Button>
+            <Button loading={buttonLoading} type="submit">
+              Redefinir
+            </Button>
           </Form>
         </AnimationContainer>
       </Content>

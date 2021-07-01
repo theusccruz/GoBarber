@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { FiLogIn, FiMail, FiLock } from 'react-icons/fi';
 import { Form } from '@unform/web';
 import { FormHandles } from '@unform/core';
@@ -25,6 +25,8 @@ const SignIn: React.FC = () => {
   const { addToast } = useToast();
   const history = useHistory();
 
+  const [buttonLoading, setButtonLoading] = useState(false);
+
   const submitForm = useCallback(
     async (data: FormData) => {
       formRef.current?.setErrors({});
@@ -38,6 +40,8 @@ const SignIn: React.FC = () => {
         await schema.validate(data, {
           abortEarly: false,
         });
+
+        setButtonLoading(true);
 
         await signIn(data);
 
@@ -55,20 +59,24 @@ const SignIn: React.FC = () => {
           return;
         }
 
-        if (error.message === 'timeout of 3000ms exceeded') {
+        if (error.response && String(error.response.status).substr(0, 1) === '4') {
           addToast({
-            title: 'Erro ao realizar logon',
-            description: 'Por favor tente novamente mais tarde',
-            type: 'error',
-            duration: 4000,
+            title: error.response.data.message,
+            description: 'Por favor tente novamente',
+            type: 'alert',
           });
+
           return;
         }
 
         addToast({
-          title: 'Email ou senha incorretos',
+          title: 'Ocorreu um erro ao realizar logon',
+          description: 'Por favor tente novamente',
           type: 'error',
+          duration: 4000,
         });
+      } finally {
+        setButtonLoading(false);
       }
     },
     [signIn, addToast, history],
@@ -87,7 +95,9 @@ const SignIn: React.FC = () => {
             <Input name="email" icon={FiMail} type="text" placeholder="Email" />
             <Input name="password" icon={FiLock} type="password" placeholder="Senha" />
 
-            <Button type="submit">Entrar</Button>
+            <Button loading={buttonLoading} type="submit">
+              Entrar
+            </Button>
 
             <Link to="/forgot_password">Esqueci minha senha</Link>
           </Form>

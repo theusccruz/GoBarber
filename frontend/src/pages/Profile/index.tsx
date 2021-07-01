@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useCallback, useRef } from 'react';
+import React, { ChangeEvent, useCallback, useRef, useState } from 'react';
 import { FiMail, FiLock, FiUser, FiCamera, FiArrowLeft } from 'react-icons/fi';
 import { Form } from '@unform/web';
 import { FormHandles } from '@unform/core';
@@ -28,6 +28,8 @@ const Profile: React.FC = () => {
 
   const history = useHistory();
   const formRef = useRef<FormHandles>(null);
+
+  const [buttonLoading, setButtonLoading] = useState(false);
 
   const handleAvatarChange = useCallback(
     async (e: ChangeEvent<HTMLInputElement>) => {
@@ -83,6 +85,8 @@ const Profile: React.FC = () => {
           abortEarly: false,
         });
 
+        setButtonLoading(true);
+
         const { name, email, old_password, password, password_confirmation } = data;
 
         const formData = {
@@ -117,12 +121,11 @@ const Profile: React.FC = () => {
           return;
         }
 
-        if (error.response.status === 400) {
+        if (error.response && String(error.response.status).substr(0, 1) === '4') {
           addToast({
-            title: 'Senha Incorreta',
+            title: error.response.data.message,
             description: 'Por favor tente novamente',
             type: 'alert',
-            duration: 4000,
           });
 
           return;
@@ -134,6 +137,8 @@ const Profile: React.FC = () => {
           type: 'error',
           duration: 4000,
         });
+      } finally {
+        setButtonLoading(false);
       }
     },
     [addToast, history, updateUser],
@@ -192,7 +197,9 @@ const Profile: React.FC = () => {
             placeholder="Confirmar nova senha"
           />
 
-          <Button type="submit">Confirmar mudanças</Button>
+          <Button loading={buttonLoading} type="submit">
+            Confirmar mudanças
+          </Button>
         </Form>
       </Content>
     </Container>
