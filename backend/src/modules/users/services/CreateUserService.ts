@@ -29,7 +29,7 @@ export default class CreateUserService {
     const findUserWithSameEmail = await this.usersRepository.findByEmail(email);
 
     if (findUserWithSameEmail) {
-      throw new AppError('This email is already registered');
+      throw new AppError('Este email não está disponível');
     }
 
     const hashedPassword = await this.hashProvider.generateHash(password);

@@ -47,7 +47,7 @@ export default class ResetPasswordService {
       user.password,
     );
     if (compareNewAndOldPassword) {
-      throw new AppError('The new password cannot be the same as the previous password.');
+      throw new AppError('Sua nova senha não pode ser igual a anterior');
     }
 
     user.password = await this.hashProvider.generateHash(password);

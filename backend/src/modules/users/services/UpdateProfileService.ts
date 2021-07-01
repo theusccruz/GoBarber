@@ -37,25 +37,25 @@ export default class UpdateProfileService {
     const user = await this.usersRepository.findById(user_id);
 
     if (!user) {
-      throw new AppError('User not found.');
+      throw new AppError('Usuário não encontrado', 404);
     }
 
     const userWithUpdatedEmail = await this.usersRepository.findByEmail(email);
 
     if (userWithUpdatedEmail && userWithUpdatedEmail.id !== user_id) {
-      throw new AppError('Email already used by another user.');
+      throw new AppError('Este email já é usado por outro usuário.');
     }
 
     user.name = name;
     user.email = email;
 
     if (password && !old_password) {
-      throw new AppError('Correctly enter the password and the old password');
+      throw new AppError('Digite corretamente a atual e a nova senha');
     }
 
     if (password && old_password) {
       if (password === old_password) {
-        throw new AppError('The new password cannot be the same as the previous password.');
+        throw new AppError('A nova senha não pode ser igual a anterior');
       }
 
       const checkold_password = await this.hashProvider.compareHash(
@@ -64,7 +64,7 @@ export default class UpdateProfileService {
       );
 
       if (!checkold_password) {
-        throw new AppError('Old password this not match');
+        throw new AppError('Senha atual informada está incorreta');
       }
       user.password = await this.hashProvider.generateHash(password);
     }

@@ -33,11 +33,11 @@ class CreateAppointmentService {
   public async execute({ provider_id, date, user_id }: IRequestDTO): Promise<Appointment> {
     const provider = await this.usersRepository.findById(provider_id);
     if (!provider) {
-      throw new AppError('Provider not found', 404);
+      throw new AppError('Nenhum barbeiro cadastrado com este nome', 404);
     }
 
     if (provider_id === user_id) {
-      throw new AppError('It is not possible to make an appointment with yourself');
+      throw new AppError('Não é possível fazer um agendamento com você mesmo');
     }
 
     /*
@@ -46,11 +46,11 @@ class CreateAppointmentService {
 		*/
     const appointmentDate = startOfHour(date);
     if (isBefore(getHours(appointmentDate), 8) || isAfter(getHours(appointmentDate), 17)) {
-      throw new AppError('This time cannot be scheduled');
+      throw new AppError('Este horário já está agendado');
     }
 
     if (isBefore(appointmentDate, Date.now())) {
-      throw new AppError("You can't create an appointment on a past date");
+      throw new AppError('Não é possível criar agendamento em datas passadas');
     }
 
     const findAppointmentInSameDate = await this.appointmentsRepository.findByDate(
@@ -58,7 +58,7 @@ class CreateAppointmentService {
       provider_id,
     );
     if (findAppointmentInSameDate) {
-      throw new AppError('This time is already scheduled');
+      throw new AppError('Esse horário já está agendado');
     }
 
     const appointment = await this.appointmentsRepository.create({
