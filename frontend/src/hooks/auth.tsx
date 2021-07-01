@@ -1,4 +1,5 @@
 import React, { createContext, useCallback, useContext, useState } from 'react';
+import { tokenToString } from 'typescript';
 
 import api from '../services/api';
 
@@ -23,6 +24,7 @@ interface AuthContextData {
   user: User;
   signIn(credentials: SignInCredentials): Promise<void>;
   signOut(): void;
+  updateUser(user: User): void;
 }
 
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
@@ -67,9 +69,20 @@ export const AuthProvider: React.FC = ({ children }) => {
     setUserData({} as AuthState);
   }, []);
 
+  const updateUser = useCallback(
+    (user: User) => {
+      localStorage.setItem('@GoBarber:user', JSON.stringify(user));
+
+      setUserData({
+        token: userData.token,
+        user,
+      });
+    },
+    [userData.token],
+  );
+
   return (
-    // eslint-disable-next-line prettier/prettier
-    <AuthContext.Provider value={{ user: userData.user, signIn, signOut }}>
+    <AuthContext.Provider value={{ user: userData.user, signIn, signOut, updateUser }}>
       {children}
     </AuthContext.Provider>
   );

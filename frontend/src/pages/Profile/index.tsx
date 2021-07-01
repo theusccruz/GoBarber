@@ -23,7 +23,7 @@ interface UpdateProfileData {
 
 const Profile: React.FC = () => {
   const { addToast } = useToast();
-  const { user } = useAuth();
+  const { user, updateUser } = useAuth();
 
   const history = useHistory();
   const formRef = useRef<FormHandles>(null);
@@ -34,10 +34,10 @@ const Profile: React.FC = () => {
         const data = new FormData();
         data.append('avatar', e.target.files[0]);
 
-        await api.patch('/users/avatar', data);
-
         try {
-          await api.patch('/users/avatar', data);
+          const response = await api.patch('/users/avatar', data);
+
+          updateUser(response.data);
 
           addToast({
             type: 'success',
