@@ -1,4 +1,4 @@
-import React, { ChangeEvent, FormEvent, useCallback, useRef } from 'react';
+import React, { ChangeEvent, useCallback, useRef } from 'react';
 import { FiMail, FiLock, FiUser, FiCamera, FiArrowLeft } from 'react-icons/fi';
 import { Form } from '@unform/web';
 import { FormHandles } from '@unform/core';
@@ -16,6 +16,7 @@ import { useAuth } from '../../hooks/auth';
 interface UpdateProfileData {
   name: string;
   email: string;
+
   old_password?: string;
   password?: string;
   password_confirmation?: string;
@@ -52,7 +53,7 @@ const Profile: React.FC = () => {
         }
       }
     },
-    [addToast],
+    [addToast, updateUser],
   );
 
   const submitForm = useCallback(
@@ -62,7 +63,19 @@ const Profile: React.FC = () => {
       const schema = Yup.object().shape({
         name: Yup.string().required('Nome obrigatório'),
         email: Yup.string().required('Email obrigatório').email('Digite um email válido'),
-        password: Yup.string().min(6, 'No mínimo 6 caracteres'),
+        old_password: Yup.string(),
+        password: Yup.string().when('old_password', {
+          is: val => !!val.length,
+          then: Yup.string().required('Campo obrigatório').min(6, 'No mínimo 6 caracteres'),
+          otherwise: Yup.string(),
+        }),
+        password_confirmation: Yup.string()
+          .when('password', {
+            is: val => !!val.length,
+            then: Yup.string().required('Campo obrigatório'),
+            otherwise: Yup.string(),
+          })
+          .oneOf([Yup.ref('password'), undefined], 'A senhas não conferem'),
       });
 
       try {
@@ -70,25 +83,33 @@ const Profile: React.FC = () => {
           abortEarly: false,
         });
 
-        const response = await api.post<UpdateProfileData>(
-          '/users',
-          {
-            name: data.name,
-            email: data.email,
-            password: data.password,
-          },
-          { timeout: 3000 },
-        );
+        const { name, email, old_password, password, password_confirmation } = data;
+
+        const formData = {
+          name,
+          email,
+          ...(old_password
+            ? {
+                old_password,
+                password,
+                password_confirmation,
+              }
+            : {}),
+        };
+
+        const response = await api.put('/profile', formData, {
+          timeout: 3000,
+        });
+        updateUser(response.data);
 
         addToast({
-          title: 'Seu usuário foi cadastrado!',
-          description: `${response.data.name}, agora você já pode logar no GoBarber`,
+          title: 'Seu perfil foi atualizado!',
           type: 'success',
           duration: 5000,
         });
 
         history.push('/'); // redireciona para a página de login
-      } catch (error) {
+      } catch (error: any) {
         if (error instanceof Yup.ValidationError) {
           const errors = getValidationErrors(error);
           formRef.current?.setErrors(errors);
@@ -96,14 +117,26 @@ const Profile: React.FC = () => {
           return;
         }
 
+        if (error.response.status === 400) {
+          addToast({
+            title: 'Senha Incorreta',
+            description: 'Por favor tente novamente',
+            type: 'alert',
+            duration: 4000,
+          });
+
+          return;
+        }
+
         addToast({
-          title: 'Ocorreu um erro ao cadastrar o usuário',
+          title: 'Ocorreu um erro ao atualizar seu usuário',
           description: 'Por favor tente novamente',
           type: 'error',
+          duration: 4000,
         });
       }
     },
-    [addToast, history],
+    [addToast, history, updateUser],
   );
 
   return (
@@ -149,14 +182,9 @@ const Profile: React.FC = () => {
             name="old_password"
             icon={FiLock}
             type="password"
-            placeholder="Senha"
+            placeholder="Senha atual"
           />
-          <Input
-            name="new_password"
-            icon={FiLock}
-            type="password"
-            placeholder="Nova senha"
-          />
+          <Input name="password" icon={FiLock} type="password" placeholder="Nova senha" />
           <Input
             name="password_confirmation"
             icon={FiLock}

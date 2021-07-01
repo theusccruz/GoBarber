@@ -1,5 +1,11 @@
 import React, { useEffect } from 'react';
-import { FiAlertCircle, FiCheckCircle, FiInfo, FiXCircle } from 'react-icons/fi';
+import {
+  FiAlertTriangle,
+  FiCheckCircle,
+  FiInfo,
+  FiChevronRight,
+  FiXOctagon,
+} from 'react-icons/fi';
 import { useToast, ToastMessage } from '../../../hooks/toast';
 
 import { Container } from './style';
@@ -15,7 +21,8 @@ const Toast: React.FC<ToastProps> = ({ toastData, style }) => {
   const icons = {
     success: <FiCheckCircle size={22} />,
     info: <FiInfo size={22} />,
-    error: <FiAlertCircle size={22} />,
+    error: <FiXOctagon size={22} />,
+    alert: <FiAlertTriangle size={22} />,
   };
 
   const toastDuration = toastData.duration ? toastData.duration : 3000;
@@ -43,7 +50,7 @@ const Toast: React.FC<ToastProps> = ({ toastData, style }) => {
       </div>
 
       <button type="button" onClick={() => removeToast(toastData.id)}>
-        <FiXCircle size={20} />
+        <FiChevronRight size={20} />
       </button>
     </Container>
   );
