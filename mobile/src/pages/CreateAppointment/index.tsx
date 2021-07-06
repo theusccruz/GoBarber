@@ -119,6 +119,22 @@ const CreateAppointment: React.FC = () => {
         date,
       });
 
+      setDayAvailability(days =>
+        days.map(({ hour, available }) => {
+          if (hour === selectedHour) {
+            return {
+              hour,
+              available: false,
+            };
+          }
+
+          return {
+            hour,
+            available,
+          };
+        }),
+      );
+
       navigate('AppointmentCreated', { date: date.getTime() });
 
       Alert.alert('Agendamento criado!');
@@ -229,13 +245,15 @@ const CreateAppointment: React.FC = () => {
             <SectionContent>
               {morningAvailability.map(({ hourFormatted, available, hour }) => (
                 <Hour
-                  selected={selectedHour === hour}
+                  selected={selectedHour === hour && available}
                   available={available}
                   enabled={available}
                   key={hourFormatted}
                   onPress={() => handleSelectHour(hour)}
                 >
-                  <HourText selected={selectedHour === hour}>{hourFormatted}</HourText>
+                  <HourText selected={selectedHour === hour && available}>
+                    {hourFormatted}
+                  </HourText>
                 </Hour>
               ))}
             </SectionContent>
@@ -247,13 +265,15 @@ const CreateAppointment: React.FC = () => {
             <SectionContent>
               {aftermoonAvailability.map(({ hourFormatted, available, hour }) => (
                 <Hour
-                  selected={selectedHour === hour}
+                  selected={selectedHour === hour && available}
                   available={available}
                   enabled={available}
                   key={hourFormatted}
                   onPress={() => handleSelectHour(hour)}
                 >
-                  <HourText selected={selectedHour === hour}>{hourFormatted}</HourText>
+                  <HourText selected={selectedHour === hour && available}>
+                    {hourFormatted}
+                  </HourText>
                 </Hour>
               ))}
             </SectionContent>

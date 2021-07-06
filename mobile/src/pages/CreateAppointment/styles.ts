@@ -61,7 +61,7 @@ export const ProvidersListContainer = styled.View`
 `;
 
 export const ProvidersList = styled(FlatList as new () => FlatList<Providers>)`
-  padding: 32px 24px;
+  padding: 32px 15px;
 `;
 
 export const ProviderContainer = styled.TouchableOpacity<ProviderContainerProps>`
