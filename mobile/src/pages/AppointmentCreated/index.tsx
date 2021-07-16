@@ -1,11 +1,49 @@
-import React from 'react';
-import { View } from 'react-native';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import React, { useCallback, useMemo } from 'react';
+import Icon from 'react-native-vector-icons/Feather';
+import { format } from 'date-fns';
+import ptBr from 'date-fns/locale/pt-BR';
+
+import { Container, Title, Description, OkButton, OkButtonText } from './styles';
+
+type RouteParams = {
+  date: number;
+};
 
 const AppointmentCreated: React.FC = () => {
-  // eslint-disable-next-line prettier/prettier
+  const { reset } = useNavigation();
+
+  const { params } = useRoute();
+  const routeParams = params as RouteParams;
+
+  const handleOkPressed = useCallback(() => {
+    reset({
+      routes: [
+        {
+          name: 'Dashboard',
+        },
+      ],
+      index: 1,
+    });
+  }, [reset]);
+
+  const formattedDate = useMemo(() => {
+    return format(routeParams.date, "EEEE', dia' dd 'de' MMMM 'de' yyyy 'às' HH:mm'h'", {
+      locale: ptBr,
+    });
+  }, [routeParams]);
+
   return (
-    // eslint-disable-next-line react/self-closing-comp
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}></View>
+    <Container>
+      <Icon name="check" size={80} color="#04d361" />
+
+      <Title>Agendamento concluído</Title>
+      <Description>{formattedDate}</Description>
+
+      <OkButton onPress={handleOkPressed}>
+        <OkButtonText>Ok</OkButtonText>
+      </OkButton>
+    </Container>
   );
 };
 
